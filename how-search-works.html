@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How Search works · Google B.C.</title>
+<meta name="description" content="How Google B.C. Search works: crawling, indexing and ranking as usual, then every result is limited to pages from before 2023.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+<style>
+  .hsw { flex: 1; }
+  .hsw-nav {
+    display: flex; align-items: center; gap: 24px;
+    padding: 12px 24px; border-bottom: 1px solid var(--border); font-size: 14px;
+  }
+  .hsw-nav .brand { font-size: 20px; display: flex; align-items: baseline; gap: 6px; }
+  .hsw-nav .brand .word { letter-spacing: -1px; font-weight: 500; }
+  .hsw-nav .brand .sub { color: var(--muted); font-size: 14px; }
+  .hero { text-align: center; padding: 72px 20px 56px; background: #f8f9fa; }
+  .hero h1 { font-size: 44px; font-weight: 400; margin: 0 0 12px; letter-spacing: -1px; }
+  .hero p { font-size: 20px; color: #5f6368; max-width: 620px; margin: 0 auto; line-height: 1.5; }
+  .hero .pill {
+    display: inline-block; margin-top: 24px; padding: 8px 16px; border-radius: 20px;
+    background: #e8f0fe; color: #1967d2; font-size: 14px;
+  }
+  .section { max-width: 960px; margin: 0 auto; padding: 56px 24px; }
+  .section h2 { font-size: 28px; font-weight: 400; margin: 0 0 12px; }
+  .section p { font-size: 16px; line-height: 1.6; color: #3c4043; max-width: 720px; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; margin-top: 32px; }
+  .card { border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
+  .card .num { display: inline-block; width: 32px; height: 32px; border-radius: 50%; color: #fff; text-align: center; line-height: 32px; font-size: 14px; margin-bottom: 12px; }
+  .card h3 { margin: 0 0 8px; font-size: 18px; font-weight: 500; }
+  .card p { font-size: 14px; margin: 0; }
+  .n1 { background: var(--blue); } .n2 { background: var(--red); } .n3 { background: var(--yellow); } .n4 { background: var(--green); }
+  .highlight { background: #f8f9fa; }
+  .highlight .section { border-left: 4px solid var(--green); }
+  code { font-family: Menlo, Consolas, monospace; font-size: 14px; background: #fff; border: 1px solid var(--border); border-radius: 3px; padding: 1px 5px; }
+  ul.notes { font-size: 15px; line-height: 1.6; color: #3c4043; max-width: 720px; padding-left: 20px; }
+  .try { margin-top: 24px; }
+  .try a {
+    display: inline-block; background: #1a73e8; color: #fff; padding: 10px 24px; border-radius: 4px; font-size: 14px;
+  }
+  .try a:hover { background: #1765cc; text-decoration: none; }
+</style>
+</head>
+<body>
+
+<div class="hsw">
+  <nav class="hsw-nav">
+    <a class="brand" href="index.html" aria-label="Google B.C. home">
+      <span class="word"><span class="c-blue">G</span><span class="c-red">o</span><span class="c-yellow">o</span><span class="c-blue">g</span><span class="c-green">l</span><span class="c-red">e</span></span>
+      <span class="sub">B.C. · How Search works</span>
+    </a>
+    <a href="https://github.com/alvations/google-bc#about" style="margin-left:auto">About</a>
+  </nav>
+
+  <section class="hero">
+    <h1>How Search works</h1>
+    <p>Google B.C. helps you find what you are looking for on the web as it was before ChatGPT. Every result comes from before 2023.</p>
+    <span class="pill">All results are filtered with <code>before:2022-12-31</code></span>
+  </section>
+
+  <section class="section">
+    <h2>Our approach</h2>
+    <p>Google B.C. is not a new search engine. It is the ordinary Google search landing page with one change: whenever you press Enter, click <em>Google Search</em>, or search by image, the query is sent to Google with the <code>before:2022-12-31</code> operator attached. Google does the crawling, indexing and ranking exactly as it always has. The only difference is the date filter, so pages written after large language models started flooding the web are left out.</p>
+  </section>
+
+  <section class="section">
+    <h2>Organizing information</h2>
+    <p>Google Search works in four stages. The first three are Google's. The fourth is ours.</p>
+    <div class="cards">
+      <div class="card">
+        <span class="num n1">1</span>
+        <h3>Crawling</h3>
+        <p>Automated programs called crawlers visit pages across the web, follow links, and download what they find.</p>
+      </div>
+      <div class="card">
+        <span class="num n2">2</span>
+        <h3>Indexing</h3>
+        <p>Google analyses the text, images and videos on each page and stores what it learns in the Search index, along with the date it believes the page was published.</p>
+      </div>
+      <div class="card">
+        <span class="num n3">3</span>
+        <h3>Ranking</h3>
+        <p>When you search, Google looks through the index for matching pages and orders them by relevance, quality and context.</p>
+      </div>
+      <div class="card">
+        <span class="num n4">4</span>
+        <h3>Filtering to before 2023</h3>
+        <p>Google B.C. adds <code>before:2022-12-31</code> to your query, so Google only returns pages it dates on or before 31 December 2022.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="highlight">
+    <section class="section">
+      <h2>Why 31 December 2022?</h2>
+      <p>ChatGPT was released to the public on 30 November 2022. The end of that year is the last moment the web was, for practical purposes, written by people. Google B.C. draws the line there.</p>
+      <h2 style="margin-top:40px">What the filter can and cannot do</h2>
+      <ul class="notes">
+        <li>The <code>before:</code> operator uses the date Google assigns to a page. That is usually the publication date, but for undated pages it is Google's best guess, so an occasional newer page can slip through.</li>
+        <li>A page first published before 2023 and edited later may still appear, because Google keeps its original date.</li>
+        <li>If you type your own <code>before:</code> date, Google B.C. respects it and does not add a second one.</li>
+        <li>Search by image goes to Google Lens with the same operator attached as text. Lens matches images by content, so the date filter only applies to the text-based results it shows alongside the visual matches.</li>
+        <li>Nothing is proxied or stored. The page only builds a Google URL and sends your browser there.</li>
+      </ul>
+      <div class="try"><a href="index.html">Try a search</a></div>
+    </section>
+  </div>
+</div>
+
+<footer class="bottom">
+  <div class="tagline">Google B.C. (Before ChatGPT)</div>
+  <div class="links">
+    <div class="bottom-left"><a href="index.html">Home</a></div>
+    <div class="bottom-right">
+      <a href="https://www.google.com/advanced_search?hl=en&amp;fg=1&amp;as_q=before%3A2022-12-31">Settings</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

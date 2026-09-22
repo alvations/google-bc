@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Google B.C.</title>
+<meta name="description" content="Google B.C. (Before ChatGPT): the Google search landing page, but every search only returns results from before 2023.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="top">
+  <nav class="top-left" aria-label="Primary">
+    <a href="https://github.com/alvations/google-bc#about">About</a>
+    <a href="how-search-works.html">How Search works</a>
+  </nav>
+  <nav class="top-right" aria-label="Secondary">
+    <a href="https://www.google.com/imghp?hl=en" id="images-link">Images</a>
+  </nav>
+</header>
+
+<main class="center">
+  <h1 class="logo" aria-label="Google B.C.">
+    <span class="c-blue">G</span><span class="c-red">o</span><span class="c-yellow">o</span><span class="c-blue">g</span><span class="c-green">l</span><span class="c-red">e</span><span class="bc">B.C.</span>
+  </h1>
+
+  <form id="search-form" class="search" action="https://www.google.com/search" method="get" role="search">
+    <div class="box">
+      <svg class="magnifier" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      <input type="text" name="q" id="q" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" autofocus aria-label="Search" title="Search">
+      <button type="button" class="lens-btn" id="lens-btn" aria-label="Search by image" title="Search by image">
+        <svg focusable="false" viewBox="0 0 192 192" aria-hidden="true"><rect fill="none" height="192" width="192"/><g><circle fill="#34a853" cx="144.07" cy="144" r="16"/><circle fill="#4285f4" cx="96.07" cy="104" r="24"/><path fill="#ea4335" d="M24,135.2c0,18.11,14.69,32.8,32.8,32.8H96v-16H56.8c-9.28,0-16.8-7.52-16.8-16.8V116H24V135.2z"/><path fill="#fbbc04" d="M168,72.8c0-18.11-14.69-32.8-32.8-32.8H116v16h19.2c9.28,0,16.8,7.52,16.8,16.8V92h16V72.8z"/><path fill="#4285f4" d="M112,24l-4.34,0l-6.02,6.02v0L91.61,40H56.8C38.69,40,24,54.69,24,72.8V92h16V72.8c0-9.28,7.52-16.8,16.8-16.8h44.13L112,45.11V24z"/></g></svg>
+      </button>
+    </div>
+    <div class="buttons">
+      <button type="submit" id="btn-search">Google Search</button>
+      <button type="submit" id="btn-lucky" name="btnI" value="1">I'm Feeling Lucky</button>
+    </div>
+    <p class="notice">Every search is sent to Google with <code>before:2022-12-31</code>, so all results come from before 2023.</p>
+    <noscript><p class="notice">JavaScript is off, so the date filter cannot be added automatically. Type <code>before:2022-12-31</code> after your query.</p></noscript>
+  </form>
+</main>
+
+<footer class="bottom">
+  <div class="tagline">Google B.C. (Before ChatGPT)</div>
+  <div class="links">
+    <div class="bottom-left"></div>
+    <div class="bottom-right">
+      <a href="https://www.google.com/advanced_search?hl=en&amp;fg=1&amp;as_q=before%3A2022-12-31" id="settings-link">Settings</a>
+    </div>
+  </div>
+</footer>
+
+<div class="overlay" id="lens-overlay" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="lens-title">
+    <div class="dialog-head">
+      <span id="lens-title">Search any image with Google Lens (before 2023)</span>
+      <button type="button" class="close-btn" id="lens-close" aria-label="Close">&#x2715;</button>
+    </div>
+    <form id="upload-form" method="post" action="https://www.google.com/searchbyimage/upload" enctype="multipart/form-data">
+      <input type="hidden" name="image_content" value="">
+      <input type="hidden" name="q" value="before:2022-12-31">
+      <label class="drop" id="drop-zone" for="file-input">
+        <svg focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285f4" d="M19 7v2.99s-1.99.01-2 0V7h-3s.01-1.99 0-2h3V2h2v3h3v2h-3zm-3 4V8h-3V5H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-8h-3zM5 19l3-4 2 3 3-4 4 5H5z"/></svg>
+        <span>Drag an image here or <span class="link">upload a file</span></span>
+        <input type="file" name="encoded_image" id="file-input" accept="image/*">
+      </label>
+    </form>
+    <div class="or"><span>OR</span></div>
+    <form id="url-form" class="url-row">
+      <input type="url" id="image-url" placeholder="Paste image link" aria-label="Paste image link" autocomplete="off">
+      <button type="submit">Search</button>
+    </form>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
