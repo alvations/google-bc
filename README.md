@@ -15,9 +15,30 @@ There is no server, no proxy and no tracking. Nothing you type is stored; the pa
 | You do | The page sends you to |
 | --- | --- |
 | Type `cats` and press Enter | `https://www.google.com/search?q=cats+before%3A2022-12-31` |
-| Click **I'm Feeling Lucky** | same URL with `&btnI=1` |
-| Click **Images** (top right) with a query typed | same URL with `&tbm=isch` |
+| Click **I'm Feeling Lucky** | the Wayback Machine capture of Google's first result, from on or before 31 Dec 2022 (see below) |
+| Click **Images** (top right) | Images mode: the same page, and searches go to Google Images with `before:2022-12-31` plus a custom date range ending 31 Dec 2022 (`tbm=isch&tbs=cdr:1,cd_min:1/1/1990,cd_max:12/31/2022`). With a query already typed, Images searches it straight away. |
 | Type your own `before:` date | your date is kept, no second operator is added |
+
+### I'm Feeling Lucky (Wayback Machine)
+
+A browser cannot see where Google's lucky redirect lands (it is cross-origin), so Lucky goes through a small service in [`resolver/`](resolver/) instead:
+
+1. The page sends the query to `https://google-bc-lucky-505312891007.us-central1.run.app/lucky?q=…`.
+2. The service collects candidate results, pooled from these sources in order: the official Google Custom Search JSON API if `CSE_KEY` and `CSE_CX` are set (it supports a real date filter and has 100 free queries a day); otherwise Google's own lucky redirect with the `before:2022-12-31` operator (this works from residential IPs, but cloud IPs get Google's captcha page); otherwise Bing's web results via its RSS feed.
+3. For each candidate in order it asks the Wayback Machine (CDX API, then the availability API) for the last capture on or before 31 December 2022, and picks the first candidate that has one.
+4. It redirects you to `https://web.archive.org/web/<timestamp>/<url>`. If no candidate has a capture before the cutoff, it uses the first candidate with the cutoff timestamp and Wayback picks the nearest capture it has. If nothing can be resolved at all, you get Google's own lucky redirect.
+
+Add `&format=json` to the service URL to see the decision instead of being redirected. The service is stdlib-only Python, keeps a small in-memory cache, and runs on Cloud Run scaled to zero. Deploy your own with:
+
+```bash
+cd resolver
+gcloud run deploy google-bc-lucky --source . --region us-central1 --allow-unauthenticated \
+  --min-instances 0 --max-instances 2 --memory 256Mi
+```
+
+then point `LUCKY_RESOLVER` in `app.js` at the URL it prints. Set it to an empty string to fall back to Google's plain lucky redirect.
+
+To use Google's own ranking from a cloud host, create a Programmable Search Engine that searches the whole web at https://programmablesearchengine.google.com/, enable the Custom Search API in your project, and deploy with `--set-env-vars CSE_KEY=<api key>,CSE_CX=<engine id>`.
 
 ### Search by image
 
@@ -33,7 +54,7 @@ Google Lens matches images by content, so the date operator applies to the text-
 
 - **About** (top left) points to this section.
 - **How Search works** (top left) is [how-search-works.html](how-search-works.html), an emulation of Google's page of the same name that explains the before-2023 filter.
-- **Settings** (bottom right) opens Google's official [Advanced Search](https://www.google.com/advanced_search?hl=en&fg=1&as_q=before%3A2022-12-31) page. The link carries `as_q=before:2022-12-31` so the "all these words" box is pre-filled with the cutoff wherever Google honours that parameter. Note that Google's current advanced-search page ignores every URL parameter (checked September 2026 with `as_q`, `q` and `tbs`), and its "Last update" menu has no custom date range, so you may need to type `before:2022-12-31` into the form yourself.
+- There is no Settings link. Google's Advanced Search page ignores every URL parameter (checked September 2026 with `as_q`, `q` and `tbs`), so it cannot be pre-filled with the cutoff.
 
 ## Run locally
 
@@ -61,6 +82,7 @@ node -e "const a=require('./app.js'); console.log(a.searchUrl('cats'))"
 | `app.js` | Builds the Google URLs and handles the search-by-image dialog |
 | `how-search-works.html` | "How Search works" page |
 | `favicon.svg` | Tab icon |
+| `resolver/main.py` | I'm Feeling Lucky service: Google first result → Wayback capture before 2023 |
 
 ## Caveats
 

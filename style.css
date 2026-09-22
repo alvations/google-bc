@@ -72,6 +72,15 @@ a:hover { text-decoration: underline; }
   top: -4px;
 }
 
+.mode-label {
+  margin: -16px 0 24px;
+  color: var(--muted);
+  font-size: 16px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.mode-label[hidden] { display: none; }
+
 /* Search box */
 .search { width: 100%; max-width: 584px; }
 .box {

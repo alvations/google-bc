@@ -7,6 +7,10 @@
   var CUTOFF = '2022-12-31';
   var OPERATOR = 'before:' + CUTOFF;
   var GOOGLE = 'https://www.google.com';
+  /* I'm Feeling Lucky goes through this small service (resolver/main.py), which
+   * asks Google for the first result and redirects to its Wayback Machine capture
+   * from on or before the cutoff. Empty string = plain Google lucky redirect. */
+  var LUCKY_RESOLVER = 'https://google-bc-lucky-505312891007.us-central1.run.app/lucky';
 
   function enc(s) {
     return encodeURIComponent(s).replace(/%20/g, '+');
@@ -19,12 +23,22 @@
     return q ? q + ' ' + OPERATOR : OPERATOR;
   }
 
+  /* Google's own custom-date-range filter (Tools > Any time > Custom range),
+   * used as a second fence for image results. */
+  var TBS_BEFORE = 'cdr:1,cd_min:1/1/1990,cd_max:12/31/2022';
+
   function searchUrl(q, opts) {
     opts = opts || {};
     var url = GOOGLE + '/search?q=' + enc(withCutoff(q));
-    if (opts.images) url += '&tbm=isch';
+    if (opts.images) url += '&tbm=isch&tbs=' + encodeURIComponent(TBS_BEFORE);
     if (opts.lucky) url += '&btnI=1';
     return url;
+  }
+
+  /* Wayback Machine snapshot (last capture on or before the cutoff) of Google's first result. */
+  function luckyUrl(q) {
+    if (!LUCKY_RESOLVER) return searchUrl(q, { lucky: true });
+    return LUCKY_RESOLVER + '?q=' + enc(withCutoff(q));
   }
 
   /* Reverse image search by URL. Google forwards the q= text into Lens. */
@@ -38,6 +52,7 @@
     OPERATOR: OPERATOR,
     withCutoff: withCutoff,
     searchUrl: searchUrl,
+    luckyUrl: luckyUrl,
     imageUrlSearchUrl: imageUrlSearchUrl
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
@@ -50,18 +65,35 @@
   var q = $('q');
   var luckyClicked = false;
 
+  /* "?tbm=isch" turns the page into Google Images B.C.: same box, image results. */
+  var imagesMode = /(^|[?&])tbm=isch(&|$)/.test(window.location.search);
+  var imagesLink = $('images-link');
+  if (imagesMode) {
+    $('mode-label').hidden = false;
+    document.title = 'Google Images B.C.';
+    imagesLink.textContent = 'All';
+    imagesLink.setAttribute('href', './');
+    $('btn-search').textContent = 'Search images';
+    $('btn-lucky').hidden = true;
+    $('notice').innerHTML = 'Every image search is sent to Google Images with <code>before:2022-12-31</code> ' +
+      'and a custom date range ending 31 Dec 2022, so all results come from before 2023.';
+  }
+
   $('btn-lucky').addEventListener('click', function () { luckyClicked = true; });
   $('btn-search').addEventListener('click', function () { luckyClicked = false; });
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
-    var lucky = e.submitter ? e.submitter.id === 'btn-lucky' : luckyClicked;
+    var lucky = !imagesMode && (e.submitter ? e.submitter.id === 'btn-lucky' : luckyClicked);
     luckyClicked = false;
-    go(searchUrl(q.value, { lucky: lucky }));
+    if (lucky) return go(luckyUrl(q.value));
+    go(searchUrl(q.value, { images: imagesMode }));
   });
 
-  $('images-link').addEventListener('click', function (e) {
-    if (!q.value.trim()) return; /* plain Images landing page */
+  /* Images with a query already typed searches it straight away;
+   * with an empty box it switches this page into Images mode. */
+  imagesLink.addEventListener('click', function (e) {
+    if (imagesMode || !q.value.trim()) return;
     e.preventDefault();
     go(searchUrl(q.value, { images: true }));
   });
