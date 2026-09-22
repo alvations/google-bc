@@ -33,6 +33,13 @@ Google Lens matches images by content, so the date operator applies to the text-
 - **About** (top left) points to this section.
 - **How Search works** (top left) is [how-search-works.html](how-search-works.html), an emulation of Google's page of the same name that explains the before-2023 filter.
 - There is no Settings link. Google's Advanced Search page ignores every URL parameter (checked September 2026 with `as_q`, `q` and `tbs`), so it cannot be pre-filled with the cutoff.
+- There is no I'm Feeling Lucky button. A lucky redirect lands on the live page, which defeats the point, and sending it to a pre-2023 Wayback Machine capture instead needs a server (see Branches below).
+- The footer reads "Google B.C. (Before ChatGPT)".
+
+## Branches
+
+- `main` is the site: static files only, nothing but redirects to Google.
+- `lucky-wayback` is an experiment kept for reference and not deployed. It adds an I'm Feeling Lucky button that opens the first result as the Wayback Machine captured it on or before 31 December 2022. That needs a small hosted service (`resolver/` on that branch) to resolve the first result, which is more than this page should carry.
 
 ## Run locally
 
