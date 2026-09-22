@@ -7,10 +7,6 @@
   var CUTOFF = '2022-12-31';
   var OPERATOR = 'before:' + CUTOFF;
   var GOOGLE = 'https://www.google.com';
-  /* I'm Feeling Lucky goes through this small service (resolver/main.py), which
-   * asks Google for the first result and redirects to its Wayback Machine capture
-   * from on or before the cutoff. Empty string = plain Google lucky redirect. */
-  var LUCKY_RESOLVER = 'https://google-bc-lucky-505312891007.us-central1.run.app/lucky';
 
   function enc(s) {
     return encodeURIComponent(s).replace(/%20/g, '+');
@@ -31,14 +27,7 @@
     opts = opts || {};
     var url = GOOGLE + '/search?q=' + enc(withCutoff(q));
     if (opts.images) url += '&tbm=isch&tbs=' + encodeURIComponent(TBS_BEFORE);
-    if (opts.lucky) url += '&btnI=1';
     return url;
-  }
-
-  /* Wayback Machine snapshot (last capture on or before the cutoff) of Google's first result. */
-  function luckyUrl(q) {
-    if (!LUCKY_RESOLVER) return searchUrl(q, { lucky: true });
-    return LUCKY_RESOLVER + '?q=' + enc(withCutoff(q));
   }
 
   /* Reverse image search by URL. Google forwards the q= text into Lens. */
@@ -52,7 +41,6 @@
     OPERATOR: OPERATOR,
     withCutoff: withCutoff,
     searchUrl: searchUrl,
-    luckyUrl: luckyUrl,
     imageUrlSearchUrl: imageUrlSearchUrl
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
@@ -63,7 +51,6 @@
 
   var form = $('search-form');
   var q = $('q');
-  var luckyClicked = false;
 
   /* "?tbm=isch" turns the page into Google Images B.C.: same box, image results. */
   var imagesMode = /(^|[?&])tbm=isch(&|$)/.test(window.location.search);
@@ -74,19 +61,12 @@
     imagesLink.textContent = 'All';
     imagesLink.setAttribute('href', './');
     $('btn-search').textContent = 'Search images';
-    $('btn-lucky').hidden = true;
     $('notice').innerHTML = 'Every image search is sent to Google Images with <code>before:2022-12-31</code> ' +
       'and a custom date range ending 31 Dec 2022, so all results come from before 2023.';
   }
 
-  $('btn-lucky').addEventListener('click', function () { luckyClicked = true; });
-  $('btn-search').addEventListener('click', function () { luckyClicked = false; });
-
   form.addEventListener('submit', function (e) {
     e.preventDefault();
-    var lucky = !imagesMode && (e.submitter ? e.submitter.id === 'btn-lucky' : luckyClicked);
-    luckyClicked = false;
-    if (lucky) return go(luckyUrl(q.value));
     go(searchUrl(q.value, { images: imagesMode }));
   });
 
